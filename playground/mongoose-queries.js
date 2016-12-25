@@ -10,7 +10,7 @@ if (!ObjectID.isValid(id)) {
     console.log('ID not valid');
 };
 
-//no need to pass new ObjectID, mongoose will let you pass in a string as the id and convert it
+//no need to pass new ObjectID, mongoose will let you pass in a string as the ID and convert it
 
 Todo.find({
     _id: id

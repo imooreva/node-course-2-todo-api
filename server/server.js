@@ -7,6 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
+const port = process.env.PORT || 3000; //port used for Heroku, otherwise 3000
 
 app.use(bodyParser.json());
 
@@ -17,7 +18,6 @@ app.post('/todos', (req, res) => {
     todo.save().then((doc) => {
         res.send(doc);
     }, (e) => {
-        //httpstatuses.com
         res.status(400).send(e);
     });
 });
@@ -31,8 +31,8 @@ app.get('/todos', (req,res) => {
 });
 
 
-//Allows for dynamic url, such as GET /todos/1234
-//creates id variable, found on the request object
+//allows for dynamic url, such as GET /todos/1234
+//creates ID variable, found on the request object
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
     
@@ -43,6 +43,7 @@ app.get('/todos/:id', (req, res) => {
     
     //if ID is valid but not found, then 404 is sent
     //if ID is valid and found, then object is sent
+    //if ID is invalid, then 400 is sent
     Todo.findById(id).then((todo) => {
         if (!todo) {
             return res.status(404).send();
@@ -54,7 +55,7 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Started on port 3000');
+    console.log(`Started up at port ${port}`);
 })
 
 module.exports = {app};
