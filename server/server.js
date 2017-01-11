@@ -30,7 +30,6 @@ app.get('/todos', (req,res) => {
     });
 });
 
-
 //allows for dynamic url, such as GET /todos/1234
 //creates ID variable, found on the request object
 app.get('/todos/:id', (req, res) => {
@@ -53,6 +52,23 @@ app.get('/todos/:id', (req, res) => {
         res.status(400).send();
     });
 });
+
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    
+    Todo.findByIdAndRemove(id).then((todo) => {
+       if (!todo) {
+           return res.status(404).send();
+       }
+        res.send(`Deleted todo ${todo}`);
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 
 app.listen(port, () => {
     console.log(`Started up at port ${port}`);
