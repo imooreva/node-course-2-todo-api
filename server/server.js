@@ -1,6 +1,7 @@
 require('./config/config.js');
 
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -38,12 +39,10 @@ app.get('/todos', (req,res) => {
 //creates ID variable, found on the request object
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
-    
     //checks for valid ID
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
-    }
-    
+    }    
     //if ID is valid but not found, then 404 is sent
     //if ID is valid and found, then object is sent
     //if ID is invalid, then 400 is sent
@@ -61,13 +60,11 @@ app.delete('/todos/:id', (req, res) => {
     var id = req.params.id;
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
-    }
-    
+    }    
     Todo.findByIdAndRemove(id).then((todo) => {
        if (!todo) {
            return res.status(404).send();
        }
-        //res.send(`Deleted todo ${todo}`);
         res.send({todo});
     }).catch((e) => {
         res.status(400).send();
@@ -110,10 +107,20 @@ app.post('/users', (req, res) => {
     });
 });
 
-
 //middleware
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
+});
+
+app.post('/users/login', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    User.findByCredentials(body.email, body.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+           res.header('x-auth', token).send(user); 
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    });
 });
 
 app.listen(port, () => {
