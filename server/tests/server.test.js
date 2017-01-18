@@ -106,7 +106,6 @@ describe('DELETE /todos/:id', () => {
             }).catch((e) => done(e));
         });
     });
-
     it('should return 404 if todo not found', (done) => {
         var hexId = new ObjectID().toHexString();
         request(app)
@@ -181,7 +180,7 @@ describe('GET /users/me',() => {
         })
             .end(done);
     });
-})
+});
 
 describe('POST /users', () => {
     it('should create a user', (done) => {
@@ -208,7 +207,6 @@ describe('POST /users', () => {
             }).catch((e) => done(e));
         });
     });
-
     it('should return validation errors if request invalid', (done) => {
         request(app)
             .post('/users')
@@ -216,7 +214,6 @@ describe('POST /users', () => {
             .expect(400)
             .end(done);
     });
-
     it('should not create user if email in use', (done) => {
         var email = 'andrew@example.com';
         var password = 'userOnePass';
@@ -226,7 +223,7 @@ describe('POST /users', () => {
             .expect(400)
             .end(done);
     });
-})
+});
 
 describe('POST /users/login', () => {
     it('should login user and return auth token', (done) => {
@@ -253,7 +250,6 @@ describe('POST /users/login', () => {
             }).catch((e) => done(e));
         });
     });
-
     it('should reject invalid login', (done) => {
             //pass invald pass, expect 400, x-auth tonotexist, user tokens array should be 0
         request(app)
@@ -276,4 +272,4 @@ describe('POST /users/login', () => {
             }).catch((e) => done(e));
         });
     });
-})
+});
