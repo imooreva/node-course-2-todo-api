@@ -38,17 +38,12 @@ app.get('/todos', authenticate, (req,res) => {
     });
 });
 
-//allows for dynamic url, such as GET /todos/1234
-//creates ID variable, found on the request object
 app.get('/todos/:id', authenticate, (req, res) => {
     var id = req.params.id;
-    //checks for valid ID
+    
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
-    }    
-    //if ID is valid but not found, then 404 is sent
-    //if ID is valid and found, then object is sent
-    //if ID is invalid, then 400 is sent
+    }
     Todo.findOne({
         _id: id,
         _creator: req.user.id
